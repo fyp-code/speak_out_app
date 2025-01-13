@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "828313310982",
+    "project_id": "fyp-app-a3419",
+    "storage_bucket": "fyp-app-a3419.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:828313310982:android:68cf7e319d485d9c78b087",
+        "android_client_info": {
+          "package_name": "com.example.speak_out_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRpluLQwstttsJEmrQQkpv-4KRQEfYGGk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
