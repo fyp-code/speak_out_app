@@ -137,7 +137,6 @@ class _SignInScreenState extends State<SignInScreen> {
                                 isLoading: controller.isLoading.value,
                                 text: "Sign In",
                                 textColor: AppColors.white,
-                                backgroundColor: const Color(0xFF242A37),
                               ),
                             ],
                           ),

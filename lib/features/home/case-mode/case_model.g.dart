@@ -15,6 +15,8 @@ CaseModel _$CaseModelFromJson(Map<String, dynamic> json) => CaseModel(
           (json['images'] as List<dynamic>?)?.map((e) => e as String).toList(),
       createdAt: _$JsonConverterFromJson<Timestamp, DateTime>(
           json['created_at'], const TimestampConverter().fromJson),
+      updatedAt: _$JsonConverterFromJson<Timestamp, DateTime>(
+          json['updated_at'], const TimestampConverter().fromJson),
     )..id = json['id'] as String?;
 
 Map<String, dynamic> _$CaseModelToJson(CaseModel instance) => <String, dynamic>{
@@ -28,6 +30,10 @@ Map<String, dynamic> _$CaseModelToJson(CaseModel instance) => <String, dynamic>{
               instance.createdAt, const TimestampConverter().toJson)
           case final value?)
         'created_at': value,
+      if (_$JsonConverterToJson<Timestamp, DateTime>(
+              instance.updatedAt, const TimestampConverter().toJson)
+          case final value?)
+        'updated_at': value,
     };
 
 Value? _$JsonConverterFromJson<Json, Value>(

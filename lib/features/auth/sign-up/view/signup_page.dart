@@ -166,7 +166,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 isLoading: controller.isLoading.value,
                                 text: "Sign Up",
                                 textColor: AppColors.white,
-                                backgroundColor: const Color(0xFF242A37),
                               ),
                             ],
                           ),

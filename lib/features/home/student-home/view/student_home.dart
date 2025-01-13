@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speak_out_app/features/auth/user_type/view/user_type.dart';
 import 'package:speak_out_app/features/cases/add-case/view/add_case_page.dart';
+import 'package:speak_out_app/features/setting/change-password/view/change_password_page.dart';
+import 'package:speak_out_app/features/user-profile/view/profile_page.dart';
 import 'package:speak_out_app/widgets/case_item.dart';
 
 import '../../../../services/firebase_auth_service.dart';
@@ -16,13 +18,29 @@ class StudentHomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Cases"),
         centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            Get.to(() => const ProfilePage());
+          },
+          icon: const Icon(
+            Icons.account_circle_outlined,
+          ),
+        ),
         actions: [
-          TextButton(
+          IconButton(
+            onPressed: () {
+              Get.to(() => ChangePasswordPage());
+            },
+            icon: const Icon(
+              Icons.key_sharp,
+            ),
+          ),
+          IconButton(
             onPressed: () async {
               await FirebaseAuthService().logout();
               Get.offAll(() => const UserType());
             },
-            child: const Icon(
+            icon: const Icon(
               Icons.logout_rounded,
             ),
           ),

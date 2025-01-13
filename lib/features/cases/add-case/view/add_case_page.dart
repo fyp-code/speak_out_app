@@ -82,7 +82,7 @@ class AddCasePage extends StatelessWidget {
                 const FieldLabel("Case Type"),
                 AppTextField(
                   textEditingController: controller.typeController,
-                  label: "Type",
+                  hint: "Type",
                   readOnly: controller.isLoading.value,
                   validator:
                       InputValidators.required(message: "Type is required"),
@@ -98,7 +98,7 @@ class AddCasePage extends StatelessWidget {
                 const FieldLabel("Description"),
                 AppTextField(
                   textEditingController: controller.descriptionController,
-                  label: "Description",
+                  hint: "Description",
                   readOnly: controller.isLoading.value,
                   validator: InputValidators.required(
                       message: "Description is required"),

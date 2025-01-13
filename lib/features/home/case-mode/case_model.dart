@@ -13,6 +13,7 @@ class CaseModel extends Model {
     this.status,
     this.images,
     this.createdAt,
+    this.updatedAt,
   });
 
   @JsonKey(includeIfNull: false, name: "user_id")
@@ -28,6 +29,9 @@ class CaseModel extends Model {
   @JsonKey(name: "created_at", includeIfNull: false)
   @TimestampConverter()
   final DateTime? createdAt;
+  @JsonKey(name: "updated_at", includeIfNull: false)
+  @TimestampConverter()
+  final DateTime? updatedAt;
 
   @override
   Map<String, dynamic> toJson() => _$CaseModelToJson(this);

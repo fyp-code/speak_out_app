@@ -30,6 +30,8 @@ class AddCaseController extends GetxController {
     super.dispose();
   }
 
+
+
   void onSubmit(BuildContext context) async {
     if (!formKey.currentState!.validate()) {
       return;
@@ -50,6 +52,7 @@ class AddCaseController extends GetxController {
         CaseModel(
           userId: FirebaseAuth.instance.currentUser?.uid,
           createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
           description: descriptionController.text,
           images: imagesUrl,
           type: typeController.text,
