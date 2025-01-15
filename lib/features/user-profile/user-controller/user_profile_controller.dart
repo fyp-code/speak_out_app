@@ -23,6 +23,7 @@ class ProfileController extends GetxController {
     try {
       appUser = await UserFirestoreService()
           .fetchOneFirestore(FirebaseAuth.instance.currentUser!.uid);
+      log("-----appUser-------${appUser?.toJson()}----------");
       isLoading = false;
       update();
     } on FirebaseException catch (e) {

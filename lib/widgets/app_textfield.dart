@@ -32,6 +32,8 @@ class AppTextField extends StatefulWidget {
     this.textInputAction = TextInputAction.done,
     this.textCapitalization = TextCapitalization.none,
     this.autovalidateMode,
+    this.focusNode,
+    this.minLines,
   });
 
   // final bool obscure;
@@ -53,6 +55,7 @@ class AppTextField extends StatefulWidget {
   final Function(String)? onChanged;
   final String? initialValue;
   final int? maxLines;
+  final int? minLines;
   final int? maxLength;
   final String? counterText;
   final TextStyle? hintStyle;
@@ -62,6 +65,7 @@ class AppTextField extends StatefulWidget {
   final TextInputAction textInputAction;
   final AutovalidateMode? autovalidateMode;
   final TextCapitalization textCapitalization;
+  final FocusNode? focusNode;
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
@@ -72,7 +76,7 @@ class _AppTextFieldState extends State<AppTextField> {
   Widget build(BuildContext context) {
     InputBorder getBorder(double width) {
       return OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(widget.borderRadius ?? 8),
         borderSide: BorderSide(
           width: width,
           color: Colors.black38,
@@ -86,6 +90,7 @@ class _AppTextFieldState extends State<AppTextField> {
       readOnly: widget.readOnly ?? false,
       initialValue: widget.initialValue,
       onTap: widget.onTap,
+      focusNode: widget.focusNode,
       autovalidateMode: widget.autovalidateMode,
       autofillHints: widget.autofillHints,
       onFieldSubmitted: widget.onFieldSubmitted,
@@ -98,6 +103,7 @@ class _AppTextFieldState extends State<AppTextField> {
       onSaved: widget.onSaved,
       inputFormatters: widget.inputFormatters,
       maxLines: widget.maxLines,
+      minLines: widget.minLines,
       maxLength: widget.maxLength,
       decoration: InputDecoration(
         prefixIcon: widget.prefix,

@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class FieldLabel extends StatelessWidget {
   final String text;
   final Color? textColor;
+  final double textSize;
   const FieldLabel(
     this.text, {
     super.key,
     this.textColor,
+    this.textSize = 16,
   });
 
   @override
@@ -18,7 +20,7 @@ class FieldLabel extends StatelessWidget {
         style: TextStyle(
           color: textColor,
           fontWeight: FontWeight.w500,
-          fontSize: 16,
+          fontSize: textSize,
         ),
       ),
     );

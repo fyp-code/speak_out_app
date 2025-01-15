@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:speak_out_app/features/cases/case-detail/view/case_detail_page.dart';
 import 'package:speak_out_app/features/home/case-mode/case_model.dart';
 import 'package:speak_out_app/utils/case_status_enum.dart';
 
@@ -13,7 +14,13 @@ class CaseItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Get.to(
+          () => CaseDetailPage(
+            caseModel: caseModel,
+          ),
+        );
+      },
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
