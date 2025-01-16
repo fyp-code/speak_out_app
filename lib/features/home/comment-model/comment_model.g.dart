@@ -7,9 +7,7 @@ part of 'comment_model.dart';
 // **************************************************************************
 
 CommentModel _$CommentModelFromJson(Map<String, dynamic> json) => CommentModel(
-      userData: json['user_data'] == null
-          ? null
-          : AppUser.fromJson(json['user_data'] as Map<String, dynamic>),
+      userId: json['user_id'] as String?,
       caseId: json['case_id'] as String?,
       comment: json['comment'] as String?,
       parentId: json['parent_id'] as String?,
@@ -20,7 +18,7 @@ CommentModel _$CommentModelFromJson(Map<String, dynamic> json) => CommentModel(
 Map<String, dynamic> _$CommentModelToJson(CommentModel instance) =>
     <String, dynamic>{
       'id': instance.id,
-      if (instance.userData?.toJson() case final value?) 'user_data': value,
+      if (instance.userId case final value?) 'user_id': value,
       if (instance.caseId case final value?) 'case_id': value,
       if (instance.comment case final value?) 'comment': value,
       if (instance.parentId case final value?) 'parent_id': value,

@@ -5,10 +5,15 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:speak_out_app/features/auth/user_type/user_type_enum/user_type_enum.dart';
 import 'package:speak_out_app/features/cases/case-detail/controller/case_detail_controller.dart';
+import 'package:speak_out_app/features/user-profile/user_model/user_model.dart';
+import 'package:speak_out_app/features/user-profile/user_service/user_service.dart';
 import 'package:speak_out_app/widgets/field_label.dart';
 
+import '../../../../services/shared_pref_service.dart';
+import '../../../../utils/case_status_enum.dart';
 import '../../../../utils/colors.dart';
 import '../../../../widgets/app_textfield.dart';
+import '../../../../widgets/custom_dropdown.dart';
 import '../../../../widgets/input_validators.dart';
 import '../../../../widgets/network_image_progress.dart';
 import '../../../home/case-mode/case_model.dart';
@@ -30,6 +35,8 @@ class _CaseDetailPageState extends State<CaseDetailPage> {
     super.initState();
   }
 
+  final isAdmin =
+      SharedPrefService().getUserType == UserRole.administrator.role;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,6 +114,31 @@ class _CaseDetailPageState extends State<CaseDetailPage> {
                           ),
                         ),
                       ),
+                      if (isAdmin) ...[
+                        if (CaseStatus.resolved.status !=
+                            widget.caseModel.status)
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: CustomDropdownButton(
+                                dropItems: CaseStatus.values
+                                    .map((e) => e.status)
+                                    .toList(),
+                                value: widget.caseModel.status ?? "",
+                                onChanged: controller.isUpdatingStatus.value
+                                    ? null
+                                    : (p0) {
+                                        controller.onUpdateStatus(
+                                          context,
+                                          p0 ?? CaseStatus.pending.status,
+                                          widget.caseModel.id ?? "",
+                                        );
+                                      },
+                                borderRadius: 20,
+                              ),
+                            ),
+                          ),
+                      ],
                       const SliverToBoxAdapter(
                         child: Divider(
                           thickness: 0.5,
@@ -178,7 +210,7 @@ class _CaseDetailPageState extends State<CaseDetailPage> {
 }
 
 class CommentWidget extends StatelessWidget {
-  const CommentWidget({
+  CommentWidget({
     super.key,
     required this.controller,
     required this.caseModel,
@@ -233,115 +265,179 @@ class CommentWidget extends StatelessWidget {
           itemCount: controller.commentsList.length,
           itemBuilder: (context, index) {
             CommentModel commentModel = controller.commentsList[index];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 15),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (commentModel.userData!.imageUrl == null ||
-                      (commentModel.userData?.imageUrl != null &&
-                          commentModel.userData!.imageUrl!.isEmpty))
-                    SvgPicture.asset(
-                      "assets/images/profileplaceholder.svg",
-                      height: 45,
-                      width: 45,
-                    )
-                  else
-                    Container(
-                      height: 45,
-                      width: 45,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey.shade300,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: NetworkImageWithProgress(
-                          imageUrl: commentModel.userData!.imageUrl!,
-                        ),
-                      ),
-                    ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(8),
-                          bottomRight: Radius.circular(8),
-                          bottomLeft: Radius.circular(8),
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Row(
+            return FutureBuilder<AppUser>(
+                future: UserFirestoreService()
+                    .fetchOneFirestore(commentModel.userId ?? ""),
+                builder: (context, snapshot) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        snapshot.connectionState == ConnectionState.waiting
+                            ? imagePlaceholder
+                            : snapshot.hasError
+                                ? imagePlaceholder
+                                : snapshot.hasData
+                                    ? snapshot.data?.imageUrl != null &&
+                                            snapshot.data!.imageUrl!.isNotEmpty
+                                        ? Container(
+                                            height: 45,
+                                            width: 45,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.grey.shade300,
+                                            ),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
+                                              child: NetworkImageWithProgress(
+                                                imageUrl:
+                                                    snapshot.data!.imageUrl!,
+                                              ),
+                                            ),
+                                          )
+                                        : imagePlaceholder
+                                    : imagePlaceholder
+
+                        //   SvgPicture.asset(
+                        //     "assets/images/profileplaceholder.svg",
+                        //     height: 45,
+                        //     width: 45,
+                        //   )
+                        // else
+                        //   Container(
+                        //     height: 45,
+                        //     width: 45,
+                        //     decoration: BoxDecoration(
+                        //       shape: BoxShape.circle,
+                        //       color: Colors.grey.shade300,
+                        //     ),
+                        //     child: ClipRRect(
+                        //       borderRadius: BorderRadius.circular(50),
+                        //       child: NetworkImageWithProgress(
+                        //         imageUrl: commentModel.userData!.imageUrl!,
+                        //       ),
+                        //     ),
+                        //   ),
+                        ,
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                              borderRadius: const BorderRadius.only(
+                                topRight: Radius.circular(8),
+                                bottomRight: Radius.circular(8),
+                                bottomLeft: Radius.circular(8),
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
                                   children: [
+                                    Expanded(
+                                      child: snapshot.connectionState ==
+                                              ConnectionState.waiting
+                                          ? _nameText()
+                                          : snapshot.hasError
+                                              ? _nameText()
+                                              : snapshot.hasData
+                                                  ? Row(
+                                                      children: [
+                                                        _nameText(
+                                                            name: snapshot
+                                                                .data?.name),
+                                                        if (snapshot
+                                                                .data?.role ==
+                                                            UserRole
+                                                                .administrator
+                                                                .role)
+                                                          Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    left: 5),
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        4),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5),
+                                                              color:
+                                                                  Colors.grey,
+                                                            ),
+                                                            child: const Text(
+                                                              "Admin",
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 12,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        const Spacer(),
+                                                      ],
+                                                    )
+                                                  : _nameText(),
+                                    ),
                                     Text(
-                                      commentModel.userData?.name ?? "",
+                                      formatCommentDate(
+                                          commentModel.createdAt ??
+                                              DateTime.now()),
                                       style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black,
+                                        fontSize: 13,
+                                        color: Colors.grey,
                                       ),
                                     ),
-                                    if (commentModel.userData?.role ==
-                                        UserRole.administrator.role)
-                                      Container(
-                                        margin: const EdgeInsets.only(left: 5),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 4),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          color: Colors.grey,
-                                        ),
-                                        child: const Text(
-                                          "Admin",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ),
-                                    const Spacer(),
                                   ],
                                 ),
-                              ),
-                              Text(
-                                formatCommentDate(
-                                    commentModel.createdAt ?? DateTime.now()),
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.grey,
+                                const SizedBox(height: 10),
+                                Text(
+                                  commentModel.comment ?? "",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 13,
+                                    color: Colors.black,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            commentModel.comment ?? "",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 13,
-                              color: Colors.black,
+                              ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            );
+                  );
+                });
           },
         );
       },
+    );
+  }
+
+  final imagePlaceholder = SvgPicture.asset(
+    "assets/images/profileplaceholder.svg",
+    height: 45,
+    width: 45,
+  );
+  Widget _nameText({String? name}) {
+    return Text(
+      name ?? "Anonymous",
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+        color: Colors.black,
+      ),
     );
   }
 

@@ -1,25 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:speak_out_app/features/auth/user_type/user_type_enum/user_type_enum.dart';
 import 'package:speak_out_app/features/cases/case-detail/view/case_detail_page.dart';
+import 'package:speak_out_app/features/home/admin-home/controller/admin_home_controller.dart';
 import 'package:speak_out_app/features/home/case-mode/case_model.dart';
 import 'package:speak_out_app/utils/case_status_enum.dart';
 
 import '../features/home/student-home/controller/student_home_controller.dart';
+import '../services/shared_pref_service.dart';
 import '../utils/colors.dart';
 
 class CaseItem extends StatelessWidget {
-  const CaseItem({super.key, required this.caseModel});
+  CaseItem({super.key, required this.caseModel});
   final CaseModel caseModel;
+  final isAdmin =
+      SharedPrefService().getUserType == UserRole.administrator.role;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Get.to(
+      onTap: () async {
+        await Get.to(
           () => CaseDetailPage(
             caseModel: caseModel,
           ),
         );
+        if (isAdmin) {
+          final control = Get.find<AdminHomeController>();
+          control.fetchCaseData();
+        }
       },
       child: Container(
         padding: const EdgeInsets.all(12),
@@ -133,32 +142,33 @@ class CaseItem extends StatelessWidget {
                 ],
               ),
             ),
-            if (caseModel.status == CaseStatus.pending.status) ...[
-              Obx(
-                () {
-                  final control = Get.find<StudentHomeController>();
-                  return control.isDeleteLoading.value
-                      ? const Padding(
-                          padding: EdgeInsets.only(left: 8.0),
-                          child: SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
+            if (!isAdmin)
+              if (caseModel.status == CaseStatus.pending.status) ...[
+                Obx(
+                  () {
+                    final control = Get.find<StudentHomeController>();
+                    return control.isDeleteLoading.value
+                        ? const Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
                             ),
-                          ),
-                        )
-                      : IconButton(
-                          onPressed: () =>
-                              control.onDeleteCase(context, caseModel.id ?? ""),
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Color(0xffFF7D53),
-                          ),
-                        );
-                },
-              ),
-            ]
+                          )
+                        : IconButton(
+                            onPressed: () => control.onDeleteCase(
+                                context, caseModel.id ?? ""),
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Color(0xffFF7D53),
+                            ),
+                          );
+                  },
+                ),
+              ]
           ],
         ),
       ),

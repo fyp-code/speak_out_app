@@ -8,18 +8,28 @@ import 'package:speak_out_app/services/shared_pref_service.dart';
 import '../../auth/user_type/user_type_enum/user_type_enum.dart';
 import '../../user-profile/user-controller/user_profile_controller.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final ProfileController profileController = Get.put(ProfileController());
   @override
-  Widget build(BuildContext context) {
-    final isAdmin =
-        SharedPrefService().getUserType == UserRole.administrator.role;
-    if (isAdmin) {
-      return const AdminHomePage();
-    } else {
-      profileController.fetchProfileData();
+  void initState() {
+    profileController.fetchProfileData();
+    super.initState();
+  }
 
+  final isAdmin =
+      SharedPrefService().getUserType == UserRole.administrator.role;
+  @override
+  Widget build(BuildContext context) {
+    if (isAdmin) {
+      return AdminHomePage();
+    } else {
       return Scaffold(
         body: SafeArea(
           child: GetBuilder<ProfileController>(

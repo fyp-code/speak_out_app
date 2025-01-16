@@ -7,13 +7,15 @@ import 'package:speak_out_app/features/home/comment-model/comment_model.dart';
 import 'package:speak_out_app/utils/firestore_exception.dart';
 
 import '../../../../utils/app_snackbar.dart';
+import '../../../home/case-mode/case_model.dart';
+import '../../../home/case-service/case_service.dart';
 import '../../../home/comment-service/comment_service.dart';
-import '../../../user-profile/user-controller/user_profile_controller.dart';
 
 class CaseDetailController extends GetxController {
   final formKey = GlobalKey<FormState>();
   var isPostingReply = false.obs;
   var isLoadingComments = false.obs;
+  var isUpdatingStatus = false.obs;
   final focusNode = FocusNode();
 
   final TextEditingController commentController = TextEditingController();
@@ -47,6 +49,34 @@ class CaseDetailController extends GetxController {
     }
   }
 
+  void onUpdateStatus(
+      BuildContext context, String status, String caseId) async {
+    try {
+      isUpdatingStatus.value = true;
+
+      await CaseFirestoreService().updateFirestore(
+        CaseModel(
+          status: status,
+        )..id = caseId,
+      );
+
+      isUpdatingStatus.value = false;
+    } on FirebaseException catch (e) {
+      log("-----firestore catch-------$e----------");
+      isUpdatingStatus.value = false;
+      e.showError(context);
+    } catch (e) {
+      isUpdatingStatus.value = false;
+      log("-----catch-------$e----------");
+
+      $showSnackBar(
+        context: context,
+        message: "Please try again",
+        icon: Icons.error_outline_outlined,
+      );
+    }
+  }
+
   void onPostComment(BuildContext context, String caseId) async {
     if (!formKey.currentState!.validate()) {
       return;
@@ -58,7 +88,7 @@ class CaseDetailController extends GetxController {
 
       await CommentsFirestoreService().insertFirestore(
         CommentModel(
-          userData: Get.find<ProfileController>().appUser,
+          userId: FirebaseAuth.instance.currentUser!.uid,
           createdAt: DateTime.now(),
           comment: commentController.text,
           caseId: caseId,

@@ -7,15 +7,15 @@ part 'comment_model.g.dart';
 @JsonSerializable(explicitToJson: true)
 class CommentModel extends Model {
   CommentModel({
-    this.userData,
+    this.userId,
     this.caseId,
     this.comment,
     this.parentId,
     this.createdAt,
   });
 
-  @JsonKey(includeIfNull: false, name: "user_data")
-  final AppUser? userData;
+  @JsonKey(includeIfNull: false, name: "user_id")
+  final String? userId;
   @JsonKey(includeIfNull: false, name: "case_id")
   final String? caseId;
   @JsonKey(includeIfNull: false)

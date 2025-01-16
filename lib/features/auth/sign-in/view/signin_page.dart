@@ -56,7 +56,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         width: size.width,
                         padding: const EdgeInsets.fromLTRB(30, 30, 0, 30),
                         decoration: const BoxDecoration(
-                          color: Color(0xFFFFD428),
+                          color: AppColors.themeColor,
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(8),
                               topRight: Radius.circular(8)),
@@ -67,7 +67,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               TextSpan(
                                 text: 'Sign In',
                                 style: TextStyle(
-                                  color: Color(0xFF242A37),
+                                  color: Colors.white,
                                   fontSize: 34,
                                   fontWeight: FontWeight.w700,
                                   height: 1.18,
@@ -76,7 +76,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               TextSpan(
                                 text: ' with email\nand password',
                                 style: TextStyle(
-                                  color: Color(0xFF242A37),
+                                  color: Colors.white,
                                   fontSize: 34,
                                   fontWeight: FontWeight.w300,
                                   height: 1.18,

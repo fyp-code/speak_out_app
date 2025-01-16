@@ -27,11 +27,13 @@ class ProfileController extends GetxController {
       isLoading = false;
       update();
     } on FirebaseException catch (e) {
+      log("-----f catch-------$e----------");
       isLoading = false;
 
       errorMessage = e.showErrorMessage();
       update();
     } catch (e) {
+      log("-----catch-------$e----------");
       isLoading = false;
 
       errorMessage = "Please try again";

@@ -63,7 +63,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               TextSpan(
                                 text: 'Sign Up',
                                 style: TextStyle(
-                                  color: Color(0xFF242A37),
+                                  color: Colors.white,
                                   fontSize: 34,
                                   fontWeight: FontWeight.w700,
                                   height: 1.18,
@@ -72,7 +72,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               TextSpan(
                                 text: ' with email\nand password',
                                 style: TextStyle(
-                                  color: Color(0xFF242A37),
+                                  color: Colors.white,
                                   fontSize: 34,
                                   fontWeight: FontWeight.w300,
                                   height: 1.18,
